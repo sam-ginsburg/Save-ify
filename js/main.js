@@ -33,6 +33,7 @@ var populateGoals = function(allGoals){
 	for(var i=0;i<allGoals.length;i++){
 		var goal = allGoals[i];
 		html1='<span>'+goal.name+'</span>'
+		html2='<button type="button" onclick="removeGoal('\''+goal.name+'\'')" class="btn">X</button> <span> &nbsp </span>'
 		goals.innerHTML+=html1;
 		html = '<div class="progress progress-striped active"><div id="goal-'+goal.name+'" class="progress-bar" role="progressbar" aria-valuenow="'+goal.current+'" aria-valuemin="0" aria-valuemax="100" style="width:'+(goal.current/goal.cost)*100+'%"><sup>'+goal.current+'</sup>&frasl;<sub>'+goal.cost+'</sub></div>'
 		goals.innerHTML+=html;
@@ -44,24 +45,21 @@ window.populateRewards=function(allRewards,points){
 	console.log(rewards.innerHTML);
 	for(var i=0;i<allRewards.length;i++){
 		var reward=allRewards[i];
-		console.log(reward.pts);
-		console.log(reward);
-		console.log(reward.name);
+		html='<button type="button" onclick="removeReward('\''+reward.name+'\'')" class="btn">X</button> <span> &nbsp </span>'
+
 		html1='<button id="reward-'+reward.name+'" type="button" onclick="redeemReward('+reward.pts+',\''+reward.name+'\')" class="btn">Claim Your Reward!</button>'
+
 		spacer='<span>&nbsp; &nbsp;</span>'
 		html2='<span>'+reward.name+'</span>'
 		html3= '<span class="label label-warning">'+ reward.pts+ 'Pts.</span> <br> <br>'
-		rewards.innerHTML+=html1
+		rewards.innerHTML+=html;
+		rewards.innerHTML+=html1;
 		rewards.innerHTML+=spacer;
 		rewards.innerHTML+=html2;
 		rewards.innerHTML+=spacer;
 		rewards.innerHTML+=html3;
-
-		if(i==allRewards.length-1){
-			newRew.innerHTML="";
-			newRew.innerHTML+=reward.name;
 		}
-	}
+	
 }
 
 function insufficientPoints(event) {
