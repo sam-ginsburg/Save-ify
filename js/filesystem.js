@@ -39,11 +39,42 @@ window.FileSystem = (function(){
 			});
 		},
 
-		removeReward: function(projName, RewardName) {
-			toRemoveReward(projName, RewardName, function(){
+		removeReward: function(RewardName) {
+			toRemoveReward("Savify", RewardName, function(){
 				window.dispatchEvent(new CustomEvent('RewardRemoved'));
 			});
 		},
+
+		removeGoal: function(GoalName) {
+			toRemoveGoal("Savify", GoalName, function(){
+				window.dispatchEvent(new CustomEvent('GoalRemoved'));
+			});
+		},
+
+		createGoal: function(GoalName, Cost) {
+			toCreateGoal(GoalName, Cost, 0, function(){
+				window.dispatchEvent(new CustomEvent('GoalCreated'));
+			});
+		},
+
+		createReward: function(RewardName, Pts) {
+			toCreateReward(RewardName, Pts, function(){
+				window.dispatchEvent(new CustomEvent('RewardCreated'));
+			});
+		},
+
+		saveMoney: function(GoalName, AmountSaved) {
+			toSaveMoney(GoalName, AmountSaved, function(){
+				window.dispatchEvent(new CustomEvent('Saved ' + AmountSaved + ' dollars for ' + GoalName));
+			});
+		},
+
+		getGoal: function(GoalName) {
+			toGetGoal("Savify", GoalName, function(goal){
+				window.dispatchEvent(new CustomEvent('GoalPulled'));
+				console.log(goal);
+			});
+		}
 
 	};
 
@@ -139,14 +170,24 @@ window.FileSystem = (function(){
 	}
 
 	function GoalFileToObj(GoalFile, success) {
+		// GoalFile.file(function(file) {
+		// 	var reader = new FileReader();
+
+		// 	reader.onloadend = function(e) {
+		// 		success({name: file.name, buffer: this.result});
+		// 	};
+
+		// 	reader.readAsArrayBuffer(file);
+		// }, errorHandler);
+
 		GoalFile.file(function(file) {
 			var reader = new FileReader();
 
 			reader.onloadend = function(e) {
-				success({name: file.name, buffer: this.result});
+				success(JSON.parse(this.result));
 			};
 
-			reader.readAsArrayBuffer(file);
+			reader.readAsText(file);
 		}, errorHandler);
 	}
 
@@ -236,9 +277,36 @@ window.FileSystem = (function(){
 		});
 	}
 
-	function toCreateReward(projName, Reward, success) {
-		getRewardsDir(projName, function(RewardsDir){
-			RewardsDir.getFile(Reward.name, {create: true, exclusive: true}, function(fileEntry){
+	function toCreateGoal(GoalName, Cost, cur, success) {
+		var goal = {name: GoalName, cost: Cost, pts: Cost/100, current: cur};
+		getGoalsDir("Savify", function(GoalsDir){
+			GoalsDir.getFile(goal.name, {create: true, exclusive: true}, function(fileEntry){
+				fileEntry.createWriter(function(fileWriter) {
+
+					fileWriter.onwriteend = function(e) {
+						console.log('Goal write completed.');
+						success();
+					};
+
+					fileWriter.onerror = function(e) {
+						console.log('Reward write failed: ' + e.toString());
+					};
+
+					var blob = new Blob([JSON.stringify(goal)], {type: 'text/plain'});
+
+					fileWriter.write(blob);
+
+				}, errorHandler);
+			}, errorHandler);
+		});
+
+	}
+
+	function toCreateReward(RewardName, pts, success) {
+		
+		var reward = {name: RewardName, pts: pts};
+		getRewardsDir("Savify", function(RewardsDir){
+			RewardsDir.getFile(reward.name, {create: true, exclusive: true}, function(fileEntry){
 				fileEntry.createWriter(function(fileWriter) {
 
 					fileWriter.onwriteend = function(e) {
@@ -250,12 +318,33 @@ window.FileSystem = (function(){
 						console.log('Reward write failed: ' + e.toString());
 					};
 
-					var blob = new Blob([JSON.stringify(Reward)], {type: 'text/plain'});
+					var blob = new Blob([JSON.stringify(reward)], {type: 'text/plain'});
 
 					fileWriter.write(blob);
 
 				}, errorHandler);
 			}, errorHandler);
+		});
+		
+	}
+
+	function toSaveMoney(GoalName, AmountSaved, success) {
+		var newGoal = {};
+		toGetGoal("Savify", GoalName, function(goal){
+			console.log(goal);
+			newGoal = {name: goal.name, cost: goal.cost, pts: goal.pts, current: goal.current + AmountSaved};
+			toRemoveGoal("Savify", GoalName, function(){
+
+				if(newGoal.current >= newGoal.cost){
+					window.dispatchEvent(new CustomEvent('goalreached', {detail: {name: GoalName, pts: newGoal.pts}}));
+				}
+
+				else{
+					toCreateGoal(GoalName, newGoal.cost, newGoal.current, function(){
+						success();
+					});
+				}
+			});
 		});
 	}
 
