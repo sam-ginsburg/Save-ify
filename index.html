@@ -56,15 +56,28 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
-        <h1>Hello, world!</h1>
-<div class="input-group">
-  <span class="input-group-addon">$</span>
-  <input type="text" class="form-control">
-  <span class="input-group-addon">.00</span>
-</div>
-            <button type="button" class="btn-group btn-group-lg">Save!</button>
+        <h1>Gamify your savings!</h1>
+
+<form class="form-inline">
+  <input type="text" class="form-control" placeholder="Amount Saved">
+  <input type="text" class="form-control" placeholder="Your Goal!">
+  <button type="submit" class="btn">Save Now!</button>
+</form>
+<br>
+<form class="form-inline">
+  <input type="text" class="form-control" placeholder="Cost of Goal">
+  <input type="text" class="form-control" placeholder="New Goal!">
+  <button type="submit" class="btn">Start Saving!</button>
+</form>
+<br>
+<form class="form-inline">
+  <input type="text" class="form-control" placeholder="Cost of Reward">
+  <input type="text" class="form-control" placeholder="Your Reward">
+  <button type="button" class="btn">Start Rewarding Yourself!</button>
+</form>
+
         <div></div>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+        <p>Save your goals, track your progress, and acheive more than you ever could have imagined! Get started saving today--and Gamify your life!</p>
         <p><a class="btn btn-primary btn-lg" role="button">Learn more »</a></p>
       </div>
     </div>
@@ -73,20 +86,38 @@
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="http://getbootstrap.com/examples/jumbotron/#" role="button">View details »</a></p>
+          <h2>Points</h2>
+          <h3>Current Score! &nbsp; &nbsp;<span class="label label-info">0</span></h3>
+          <h3>Newest Reward! &nbsp;<span class="label label-info">None Unlocked</span></h3>
+          <h3>All Current Rewards:</h3>
+          <table>
+  <tr>
+    <td> <button type="button" class="btn">Treat Yo'self!</button> </td>
+    <td>&nbsp; &nbsp;</td>
+    <td>Buy Shirt </td>
+    <td>&nbsp; &nbsp;</td>
+     <td><span class="label label-warning">20 Pts.</span></td> 
+  </tr>
+</table>
         </div>
         <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="http://getbootstrap.com/examples/jumbotron/#" role="button">View details »</a></p>
+          <h2>Goals</h2>
+          <table>
+             <tr>
+              <div class="progress progress-striped active">
+                <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+              </div>
+                <div>
+                <span>GoalTitle &nbsp; &nbsp; &nbsp; &nbsp; <sup>1</sup>&frasl;<sub>10</sub></span></div>
+              
+            </tr>
+            </table>
+
+</div>
+</tr>
+
+          </table>
        </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-default" href="http://getbootstrap.com/examples/jumbotron/#" role="button">View details »</a></p>
-        </div>
       </div>
 
       <hr>
