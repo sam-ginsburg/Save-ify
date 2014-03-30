@@ -25,7 +25,10 @@ window.FileSystem = (function(){
 					window.dispatchEvent(new CustomEvent('initdone'));
 				}, function(){
 					FileSystem.createProject("Savify",function(){
-						window.dispatchEvent(new CustomEvent('initdone'));
+						toCreatePoints(0, function(){
+							window.dispatchEvent(new CustomEvent('initdone'));
+						});
+						// window.dispatchEvent(new CustomEvent('initdone'));
 					});
 				});
 			});
@@ -50,6 +53,13 @@ window.FileSystem = (function(){
 		removeGoal: function(GoalName) {
 			toRemoveGoal("Savify", GoalName, function(){
 				window.dispatchEvent(new CustomEvent('GoalRemoved'));
+				window.dispatchEvent(new CustomEvent('someChange'));
+			});
+		},
+
+		removePoints: function() {
+			toRemovePoints(function(){
+				window.dispatchEvent(new CustomEvent('PointsRemoved'));
 				window.dispatchEvent(new CustomEvent('someChange'));
 			});
 		},
@@ -91,6 +101,32 @@ window.FileSystem = (function(){
 		getAllRewards: function() {
 			toGetAllRewards("Savify", function(RewardArray){
 				window.dispatchEvent(new CustomEvent('AllRewardsPulled'), {detail: RewardArray});
+			});
+		},
+
+		getPoints: function(success) {
+			toGetPoints(function(points){
+				console.log(points);
+				window.dispatchEvent(new CustomEvent('PointsPulled'), {detail: points});
+				success(points);
+			});
+		},
+
+		changePoints: function(delta) {
+			toChangePoints(delta, function(){
+				window.dispatchEvent(new CustomEvent('pointsChanged'));
+				window.dispatchEvent(new CustomEvent('someChange'));
+			});
+		},
+
+		usePoints: function(pointsUsed) {
+			FileSystem.getPoints(function(pts){
+				if(pts - pointsUsed >= 0){
+					FileSystem.changePoints(-pointsUsed);
+				}
+				else{
+					window.dispatchEvent(new CustomEvent('NotEnoughPoints'));
+				}
 			});
 		}
 
@@ -187,16 +223,23 @@ window.FileSystem = (function(){
 		});
 	}
 
+	function toGetPointsFile(success) {
+		getProject("Savify", function(MainDir){
+			MainDir.getFile("points", {create: false}, function(fileEntry){
+				success(fileEntry);
+			}, errorHandler);
+		});
+	}
+
+	function toGetPoints(success) {
+		toGetPointsFile(function(PointsFile){
+			GoalFileToObj(PointsFile, function(Points){
+				success(Points.points);
+			});
+		});
+	}
+
 	function GoalFileToObj(GoalFile, success) {
-		// GoalFile.file(function(file) {
-		// 	var reader = new FileReader();
-
-		// 	reader.onloadend = function(e) {
-		// 		success({name: file.name, buffer: this.result});
-		// 	};
-
-		// 	reader.readAsArrayBuffer(file);
-		// }, errorHandler);
 
 		GoalFile.file(function(file) {
 			var reader = new FileReader();
@@ -346,6 +389,30 @@ window.FileSystem = (function(){
 		
 	}
 
+	function toCreatePoints(pts, success) {
+		var pts = {points: pts};
+		getProject("Savify", function(MainDir){
+			MainDir.getFile("points", {create: true, exclusive: true}, function(fileEntry){
+				fileEntry.createWriter(function(fileWriter) {
+
+					fileWriter.onwriteend = function(e) {
+						console.log('Points write completed.');
+						success();
+					};
+
+					fileWriter.onerror = function(e) {
+						console.log('Points write failed: ' + e.toString());
+					};
+
+					var blob = new Blob([JSON.stringify(pts)], {type: 'text/plain'});
+
+					fileWriter.write(blob);
+
+				}, errorHandler);
+			}, errorHandler);
+		}, errorHandler);
+	}
+
 	function toSaveMoney(GoalName, AmountSaved, success) {
 		var newGoal = {};
 		toGetGoal("Savify", GoalName, function(goal){
@@ -362,6 +429,18 @@ window.FileSystem = (function(){
 						success();
 					});
 				}
+			});
+		});
+	}
+
+	function toChangePoints(delta, success) {
+		var newPoints = {};
+		toGetPoints(function(pts){
+			newPoints = {points: pts + delta};
+			toRemovePoints(function(){
+				toCreatePoints(newPoints.points, function(){
+					success();
+				});
 			});
 		});
 	}
@@ -421,6 +500,14 @@ window.FileSystem = (function(){
 				}, errorHandler);
 
 			}, errorHandler);
+		});
+	}
+
+	function toRemovePoints(success) {
+		getProject("Savify", function(MainDir){
+			removeFile(MainDir, "points", function(){
+				success();
+			});
 		});
 	}
 
