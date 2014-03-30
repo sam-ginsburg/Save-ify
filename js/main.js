@@ -34,20 +34,20 @@ var populateGoals = function(allGoals){
 		var goal = allGoals[i];
 		html1='<span>'+goal.name+'</span>'
 		goals.innerHTML+=html1;
-		html = '<div class="progress progress-striped active"><div id="goal-'+goal.name+'" class="progress-bar" role="progressbar" aria-valuenow="'+goal.current+'" aria-valuemin="0" aria-valuemax="100" style="width:'+(goal.current/goal.cost)*100+'%"></div>'
+		html = '<div class="progress progress-striped active"><div id="goal-'+goal.name+'" class="progress-bar" role="progressbar" aria-valuenow="'+goal.current+'" aria-valuemin="0" aria-valuemax="100" style="width:'+(goal.current/goal.cost)*100+'%"><sup>1</sup>&frasl;<sub>10</sub></div>'
 		goals.innerHTML+=html;
 	}
 }
 window.populateRewards=function(allRewards){
 	var rewarder=$('#rewards');
-	rewards.innerHTML=".";
+	rewards.innerHTML="";
 	console.log(rewards.innerHTML);
 	for(var i=0;i<allRewards.length;i++){
 		var reward=allRewards[i];
 		html1='<button id="reward-'+reward.name+'" type="button" class="btn">Claim Your Reward!</button>'
 		spacer='<span>&nbsp; &nbsp;</span>'
 		html2='<span>'+reward.name+'</span>'
-		html3= '<span class="label label-warning">'+ reward.pts+ 'Pts.</span> <br>'
+		html3= '<span class="label label-warning">'+ reward.pts+ 'Pts.</span> <br> <br>'
 		rewards.innerHTML+=html1
 		rewards.innerHTML+=spacer;
 		rewards.innerHTML+=html2;
