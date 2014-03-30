@@ -1,8 +1,6 @@
 window.addEventListener('initdone', start);
 window.addEventListener('goalreached', this.goalReached);
-<<<<<<< HEAD
-window.wtf = "wtf";
-=======
+
 window.addEventListener('allGoalsPulled', this.updateGoals);
 window.addEventListener('allRewardsPulled', this.updateRewards);
 window.addEventListener('someChange', this.load);
@@ -15,7 +13,6 @@ $('.one').click(saveButton);
 $('.two').click(goalButton);
 $('.three').click(rewardButton);
 
->>>>>>> 16e0cfa1db9b9eb27dff085d1e0dadf1a76e6d85
 FileSystem.init();
 
 function start(){
@@ -30,12 +27,33 @@ function goalReached(event) {
 }
 window.populateGoals = function(allGoals){
 	var goals = $('#goals');
+	goals.innerHTML="";
 	for(var i=0;i<allGoals.length;i++){
 		var goal = allGoals[i];
 		html1='<span>'+goal.name+'</span>'
 		goals.append($(html1));
-		html = '<div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="'+goal.current+'" aria-valuemin="0" aria-valuemax="100" style="width:'+(goal.current/goal.cost)*100+'%"></div>'
+		html = '<div class="progress progress-striped active"><div id="goal-'+goal.name+'" class="progress-bar" role="progressbar" aria-valuenow="'+goal.current+'" aria-valuemin="0" aria-valuemax="100" style="width:'+(goal.current/goal.cost)*100+'%"></div>'
 		goals.append($(html));
+	}
+}
+window.populateRewards=function(allRewards){
+	var rewards=$('#rewards');
+	rewards.innerHTML="";
+	for(var i=0;i<allRewards.length;i++){
+		var reward=allRewards[i];
+		html1='<button id="reward-'+reward.name+'" type="button" class="btn">Treat Yo\'self!</button>'
+		spacer='<span>&nbsp; &nbsp;</span>'
+		html2='<span>'+reward.name+'</span>'
+		html3= '<span class="label label-warning">'+ reward.cost+ 'Pts.</span> <br>'
+		rewards.append($(html1));
+		rewards.append($(spacer));
+		rewards.append($(html2));
+		rewards.append($(spacer));
+		rewards.append($(html3));
+		if(i==allRewards.length-1){
+			newRew.innerHTML="";
+			newRew.innerHTML+=reward.name;
+		}
 	}
 }
 
@@ -82,4 +100,4 @@ function updateGoals(event) {
 function updateRewards(event) {
 	allRewards = event.detail;
 }
->>>>>>> 16e0cfa1db9b9eb27dff085d1e0dadf1a76e6d85
+
