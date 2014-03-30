@@ -35,6 +35,7 @@ window.FileSystem = (function(){
 		createProject: function(projName, success) {
 			toCreateProject(projName, function(){
 				window.dispatchEvent(new CustomEvent('projectCreated'));
+				window.dispatchEvent(new CustomEvent('someChange'));
 				success();
 			});
 		},
@@ -42,24 +43,28 @@ window.FileSystem = (function(){
 		removeReward: function(RewardName) {
 			toRemoveReward("Savify", RewardName, function(){
 				window.dispatchEvent(new CustomEvent('RewardRemoved'));
+				window.dispatchEvent(new CustomEvent('someChange'));
 			});
 		},
 
 		removeGoal: function(GoalName) {
 			toRemoveGoal("Savify", GoalName, function(){
 				window.dispatchEvent(new CustomEvent('GoalRemoved'));
+				window.dispatchEvent(new CustomEvent('someChange'));
 			});
 		},
 
 		createGoal: function(GoalName, Cost) {
 			toCreateGoal(GoalName, Cost, 0, function(){
 				window.dispatchEvent(new CustomEvent('GoalCreated'));
+				window.dispatchEvent(new CustomEvent('someChange'));
 			});
 		},
 
 		createReward: function(RewardName, Pts) {
 			toCreateReward(RewardName, Pts, function(){
 				window.dispatchEvent(new CustomEvent('RewardCreated'));
+				window.dispatchEvent(new CustomEvent('someChange'));
 			});
 		},
 
@@ -67,6 +72,7 @@ window.FileSystem = (function(){
 			toSaveMoney(GoalName, AmountSaved, function(){
 				console.log('Saved ' + AmountSaved + ' dollars for ' + GoalName);
 				window.dispatchEvent(new CustomEvent('moneySaved'));
+				window.dispatchEvent(new CustomEvent('someChange'));
 			});
 		},
 
