@@ -32,8 +32,8 @@ var populateGoals = function(allGoals){
 	goals.innerHTML="";
 	for(var i=0;i<allGoals.length;i++){
 		var goal = allGoals[i];
-		html1='<span>'+goal.name+'</span>';
-		html2='<button type="button" onclick="removeGoal(\''+goal.name+'\')" class="btn">X</button> <span> &nbsp </span>';
+		html1='<span style="font-size: 18px">'+goal.name+'</span>';
+		html2='<button type="button" onclick="removeGoal(\''+goal.name+'\')" class="btn" style="margin-bottom: 5px; padding: 2px 6px; font-size: 10px">X</button> <span> &nbsp </span>';
 		goals.innerHTML+=html2;
 		goals.innerHTML+=html1;
 		var newname = toValidName(goal.name);
@@ -47,12 +47,12 @@ window.populateRewards=function(allRewards,points){
 	console.log(rewards.innerHTML);
 	for(var i=0;i<allRewards.length;i++){
 		var reward=allRewards[i];
-		html='<button type="button" onclick="removeReward(\''+reward.name+'\')" class="btn">X</button> <span> &nbsp </span>';
+		html='<button type="button" onclick="removeReward(\''+reward.name+'\')" class="btn" style="padding: 7.5px 6px; font-size: 12px">X</button> <span> &nbsp </span>';
 
-		html1='<button id="reward-'+reward.name+'" type="button" onclick="redeemReward(\''+reward.pts+'\',\''+reward.name+'\')" class="btn">Claim Your Reward!</button>';
+		html1='<button id="reward-'+reward.name+'" type="button" onclick="redeemReward(\''+reward.pts+'\',\''+reward.name+'\')" class="btn"> Claim Reward!</button>';
 
 		spacer='<span>&nbsp; &nbsp;</span>';
-		html2='<span>'+reward.name+'</span>';
+		html2='<span style="font-size: 16px">'+reward.name+'</span>';
 		html3= '<span class="label label-warning">'+ reward.pts+ 'Pts.</span> <br> <br>';
 		rewards.innerHTML+=html;
 		rewards.innerHTML+=html1;
