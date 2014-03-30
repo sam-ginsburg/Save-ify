@@ -41,7 +41,7 @@ window.populateRewards=function(allRewards){
 	rewards.innerHTML="";
 	for(var i=0;i<allRewards.length;i++){
 		var reward=allRewards[i];
-		html1='<button id="reward-'+reward.name+'" type="button" class="btn">Treat Yo\'self!</button>'
+		html1='<button id="reward-'+reward.name+'" type="button" class="btn">Claim Your Reward!</button>'
 		spacer='<span>&nbsp; &nbsp;</span>'
 		html2='<span>'+reward.name+'</span>'
 		html3= '<span class="label label-warning">'+ reward.cost+ 'Pts.</span> <br>'
