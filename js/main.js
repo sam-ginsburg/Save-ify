@@ -1,12 +1,11 @@
 window.addEventListener('initdone', start);
 window.addEventListener('goalreached', this.goalReached);
-<<<<<<< HEAD
-window.wtf = "wtf";
-=======
-window.addEventListener('allGoalsPulled', this.updateGoals);
-window.addEventListener('allRewardsPulled', this.updateRewards);
+window.addEventListener('AllGoalsPulled', this.updateGoals);
+window.addEventListener('AllRewardsPulled', this.updateRewards);
 window.addEventListener('someChange', this.load);
 window.addEventListener('NotEnoughPoints', this.insufficientPoints);
+window.addEventListener('moneySaved', this.moneySaved);
+window.addEventListener('pointsChanged', this.updatePoints);
 
 var allGoals = null;
 var allRewards = null;
@@ -15,11 +14,11 @@ $('.one').click(saveButton);
 $('.two').click(goalButton);
 $('.three').click(rewardButton);
 
->>>>>>> 16e0cfa1db9b9eb27dff085d1e0dadf1a76e6d85
 FileSystem.init();
 
 function start(){
 	load();
+	updatePoints();
 }
 
 function goalReached(event) {
@@ -28,7 +27,7 @@ function goalReached(event) {
 	$('#myModal').modal('toggle');
 
 }
-window.populateGoals = function(allGoals){
+var populateGoals = function(allGoals){
 	var goals = $('#goals');
 	for(var i=0;i<allGoals.length;i++){
 		var goal = allGoals[i];
@@ -49,7 +48,7 @@ function saveButton(event) {
 	var amt = $('#amountSave').val();
 	var goalname = $('#goalC').val();
 	FileSystem.saveMoney(goalname, parseInt(amt,10));
-	return false;
+	//return false;
 }
 
 function goalButton(event) {
@@ -57,7 +56,7 @@ function goalButton(event) {
 	var goalname = $('#goalName').val();
 	var cost = $('#goalCost').val();
 	FileSystem.createGoal(goalname, parseInt(cost,10));
-	return false;
+	//return false;
 }
 
 function rewardButton(event) {
@@ -65,16 +64,18 @@ function rewardButton(event) {
 	var rewardname = $('#rewName').val();
 	var cost = $('#rewCost').val();
 	FileSystem.createReward(rewardname, parseInt(cost,10));
-	return false;
+	//return false;
 }
 
 function load() {
 	console.log("loading");
 	FileSystem.getAllGoals();
 	FileSystem.getAllRewards();
+	// FileSystem.getPoints();
 }
 
 function updateGoals(event) {
+	console.log("updating goals");
 	allGoals = event.detail;
 	populateGoals(allGoals);
 }
@@ -82,4 +83,15 @@ function updateGoals(event) {
 function updateRewards(event) {
 	allRewards = event.detail;
 }
->>>>>>> 16e0cfa1db9b9eb27dff085d1e0dadf1a76e6d85
+
+function updatePoints(event) {
+	FileSystem.getPoints(function(pts){
+		$("#pointBox").html(pts);
+	});
+}
+
+function moneySaved(event) {
+	FileSystem.changePoints(event.detail.amt/100, function(){
+	});
+	//$("#pointBox").html((parseFloat(($("#pointBox").text()))+event.detail.amt)/100);
+}

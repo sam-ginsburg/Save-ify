@@ -81,8 +81,8 @@ window.FileSystem = (function(){
 		saveMoney: function(GoalName, AmountSaved) {
 			toSaveMoney(GoalName, AmountSaved, function(){
 				console.log('Saved ' + AmountSaved + ' dollars for ' + GoalName);
-				window.dispatchEvent(new CustomEvent('moneySaved'));
-				window.dispatchEvent(new CustomEvent('someChange'));
+				// window.dispatchEvent(new CustomEvent('moneySaved'));
+				// window.dispatchEvent(new CustomEvent('someChange'));
 			});
 		},
 
@@ -94,13 +94,13 @@ window.FileSystem = (function(){
 
 		getAllGoals: function() {
 			toGetAllGoals("Savify", function(GoalArray){
-				window.dispatchEvent(new CustomEvent('AllGoalsPulled'), {detail: GoalArray});
+				window.dispatchEvent(new CustomEvent('AllGoalsPulled', {detail: GoalArray}));
 			});
 		},
 
 		getAllRewards: function() {
 			toGetAllRewards("Savify", function(RewardArray){
-				window.dispatchEvent(new CustomEvent('AllRewardsPulled'), {detail: RewardArray});
+				window.dispatchEvent(new CustomEvent('AllRewardsPulled', {detail: RewardArray}));
 			});
 		},
 
@@ -108,14 +108,17 @@ window.FileSystem = (function(){
 			toGetPoints(function(points){
 				console.log(points);
 				window.dispatchEvent(new CustomEvent('PointsPulled'), {detail: points});
-				success(points);
+				if(typeof success === "function") {
+					success(points);
+				}
 			});
 		},
 
-		changePoints: function(delta) {
+		changePoints: function(delta, success) {
 			toChangePoints(delta, function(){
 				window.dispatchEvent(new CustomEvent('pointsChanged'));
-				window.dispatchEvent(new CustomEvent('someChange'));
+				// window.dispatchEvent(new CustomEvent('someChange'));
+				success();
 			});
 		},
 
@@ -421,11 +424,14 @@ window.FileSystem = (function(){
 			toRemoveGoal("Savify", GoalName, function(){
 
 				if(newGoal.current >= newGoal.cost){
-					window.dispatchEvent(new CustomEvent('goalreached', {detail: {name: GoalName, pts: newGoal.pts}}));
+					window.dispatchEvent(new CustomEvent('goalreached', {detail: {name: GoalName, pts: newGoal.pts, amt: AmountSaved}}));
+					window.dispatchEvent(new CustomEvent('someChange'));
+					success();
 				}
 
 				else{
 					toCreateGoal(GoalName, newGoal.cost, newGoal.current, function(){
+						window.dispatchEvent(new CustomEvent('moneySaved', {detail: {name: newGoal, amt: AmountSaved}}));
 						success();
 					});
 				}
