@@ -5,43 +5,60 @@ window.FileSystem = (function(){
 
 	navigator.webkitPersistentStorage.requestQuota(20*1024*1024, function(grantedBytes) {
 		window.myGrantedBytes = grantedBytes;
+		window.dispatchEvent(new CustomEvent('quota'));
 	}, function(e) {
 		console.log('Error: Could not get storage quota.', e);
 	});
 
-	var myFS = null;
-	var myGoalsDir = null;
-	var myRewardsDir = null;
+	// var myFS = null;
+	// var myGoalsDir = null;
+	// var myRewardsDir = null;
+	// var myProjDir = null;
 
 
 	var FileSystem = {
 
 		init: function() {
-			toCreateProject("Savify", function(){
-				toSetUp();
+		
+			window.addEventListener('quota',function(){
+				getProject("Savify", function(dirEntry){
+					window.dispatchEvent(new CustomEvent('initdone'));
+				}, function(){
+					FileSystem.createProject("Savify",function(){
+						window.dispatchEvent(new CustomEvent('initdone'));
+					});
+				});
+			});
+
+		},
+
+		createProject: function(projName, success) {
+			toCreateProject(projName, function(){
+				window.dispatchEvent(new CustomEvent('projectCreated'));
+				success();
 			});
 		},
 
-		removeTrack: function(projName, trackName) {
-			toRemoveTrack(projName, trackName, function(){
-				window.dispatchEvent(new CustomEvent('trackRemoved'));
+		removeReward: function(projName, RewardName) {
+			toRemoveReward(projName, RewardName, function(){
+				window.dispatchEvent(new CustomEvent('RewardRemoved'));
 			});
 		},
 
 	};
 
-	function toSetUp() {
+	function toSetUp(success) {
 		getFS(function(fs){
 			myFS = fs;
+			getGoalsDir("Savify", function(GoalsDir){
+				myGoalsDir = GoalsDir;
+				getRewardsDir("Savify", function(RewardsDir){
+					myRewardsDir = RewardsDir;
+					success();
+				});
+			});
 		});
 
-		getGoalsDir("Savify", function(GoalsDir){
-			myGoalsDir = GoalsDir;
-		});
-
-		getRewardsDir("Savify", function(RewardsDir){
-			myRewardsDir = RewardsDir;
-		});
 	}
 
 	function getFS(success) {
@@ -50,11 +67,13 @@ window.FileSystem = (function(){
 		}, errorHandler);
 	}
 
-	function getProject(projName, success) {
+	function getProject(projName, success, failure) {
 		getFS(function(fs) {
 			fs.root.getDirectory(projName, {create: false}, function(dirEntry) {
 				success(dirEntry);
-			}, errorHandler);
+			}, function(){
+				failure();
+			});
 		});
 	}
 
@@ -79,18 +98,18 @@ window.FileSystem = (function(){
 		});
 	}
 
-	function toGetTrackFile(projName, trackName, success) {
+	function toGetRewardFile(projName, RewardName, success) {
 		getRewardsDir(projName, function(RewardsDir){
-			RewardsDir.getFile(trackName, {create: false}, function(fileEntry) {
+			RewardsDir.getFile(RewardName, {create: false}, function(fileEntry) {
 				success(fileEntry);
 			}, errorHandler);
 		});
 	}
 
-	function toGetTrack(projName, trackName, success) {
-		toGetTrackFile(projName, trackName, function(trackFile){
-			trackFileToObj(trackFile, function(track){
-				success(track);
+	function toGetReward(projName, RewardName, success) {
+		toGetRewardFile(projName, RewardName, function(RewardFile){
+			RewardFileToObj(RewardFile, function(Reward){
+				success(Reward);
 			});
 		});
 	}
@@ -103,24 +122,24 @@ window.FileSystem = (function(){
 		});
 	}
 
-	function toGetSoundFile(projName, soundName, success) {
+	function toGetGoalFile(projName, GoalName, success) {
 		getGoalsDir(projName, function(GoalsDir){
-			GoalsDir.getFile(soundName, {create: false}, function(fileEntry) {
+			GoalsDir.getFile(GoalName, {create: false}, function(fileEntry) {
 				success(fileEntry);
 			}, errorHandler);
 		});
 	}
 
-	function toGetSound(projName, soundName, success) {
-		toGetSoundFile(projName, soundName, function(soundFile){
-			soundFileToObj(soundFile, function(sound){
-				success(sound);
+	function toGetGoal(projName, GoalName, success) {
+		toGetGoalFile(projName, GoalName, function(GoalFile){
+			GoalFileToObj(GoalFile, function(Goal){
+				success(Goal);
 			});
 		});
 	}
 
-	function soundFileToObj(soundFile, success) {
-		soundFile.file(function(file) {
+	function GoalFileToObj(GoalFile, success) {
+		GoalFile.file(function(file) {
 			var reader = new FileReader();
 
 			reader.onloadend = function(e) {
@@ -131,8 +150,8 @@ window.FileSystem = (function(){
 		}, errorHandler);
 	}
 
-	function trackFileToObj(trackFile, success) {
-		trackFile.file(function(file) {
+	function RewardFileToObj(RewardFile, success) {
+		RewardFile.file(function(file) {
 			var reader = new FileReader();
 
 			reader.onloadend = function(e) {
@@ -143,7 +162,7 @@ window.FileSystem = (function(){
 		}, errorHandler);
 	}
 
-	function toGetAllSoundFiles(projName, success) {
+	function toGetAllGoalFiles(projName, success) {
 		getGoalsDir(projName, function(GoalsDir){
 			var dirReader = GoalsDir.createReader();
 			var entries = [];
@@ -156,20 +175,20 @@ window.FileSystem = (function(){
 	}
 
 	function toGetAllGoals(projName, success) {
-		toGetAllSoundFiles(projName, function(fileEntries){
-			var soundArray = [];
+		toGetAllGoalFiles(projName, function(fileEntries){
+			var GoalArray = [];
 			for(var i = 0; i<fileEntries.length; i++){
-				soundFileToObj(fileEntries[i], function(sound){
-					soundArray.push(sound);
-					if(soundArray.length == fileEntries.length){
-						success(soundArray);
+				GoalFileToObj(fileEntries[i], function(Goal){
+					GoalArray.push(Goal);
+					if(GoalArray.length == fileEntries.length){
+						success(GoalArray);
 					}
 				});
 			}
 		});
 	}
 
-	function toGetAllTrackFiles(projName, success) {
+	function toGetAllRewardFiles(projName, success) {
 		getRewardsDir(projName, function(RewardsDir){
 			var dirReader = RewardsDir.createReader();
 			var entries = [];
@@ -182,13 +201,13 @@ window.FileSystem = (function(){
 	}
 
 	function toGetAllRewards(projName, success) {
-		toGetAllTrackFiles(projName, function(fileEntries){
-			var trackArray = [];
+		toGetAllRewardFiles(projName, function(fileEntries){
+			var RewardArray = [];
 			for(var i = 0; i<fileEntries.length; i++){
-				trackFileToObj(fileEntries[i], function(track){
-					trackArray.push(track);
-					if(trackArray.length == fileEntries.length){
-						success(trackArray);
+				RewardFileToObj(fileEntries[i], function(Reward){
+					RewardArray.push(Reward);
+					if(RewardArray.length == fileEntries.length){
+						success(RewardArray);
 					}
 				});
 			}
@@ -205,7 +224,7 @@ window.FileSystem = (function(){
 
 							fileWriter.onwriteend = function(e) {
 								if(i === filesList.length){
-									console.log('Sound write completed.');
+									console.log('Goal write completed.');
 									success();
 								}
 							};
@@ -217,21 +236,21 @@ window.FileSystem = (function(){
 		});
 	}
 
-	function toCreateTrack(projName, track, success) {
+	function toCreateReward(projName, Reward, success) {
 		getRewardsDir(projName, function(RewardsDir){
-			RewardsDir.getFile(track.name, {create: true, exclusive: true}, function(fileEntry){
+			RewardsDir.getFile(Reward.name, {create: true, exclusive: true}, function(fileEntry){
 				fileEntry.createWriter(function(fileWriter) {
 
 					fileWriter.onwriteend = function(e) {
-						console.log('Track write completed.');
+						console.log('Reward write completed.');
 						success();
 					};
 
 					fileWriter.onerror = function(e) {
-						console.log('Track write failed: ' + e.toString());
+						console.log('Reward write failed: ' + e.toString());
 					};
 
-					var blob = new Blob([JSON.stringify(track)], {type: 'text/plain'});
+					var blob = new Blob([JSON.stringify(Reward)], {type: 'text/plain'});
 
 					fileWriter.write(blob);
 
@@ -269,17 +288,17 @@ window.FileSystem = (function(){
 		}, errorHandler);
 	}
 
-	function toRemoveSound(projName, soundName, success) {
+	function toRemoveGoal(projName, GoalName, success) {
 		getGoalsDir(projName, function(GoalsDir){
-			removeFile(GoalsDir, soundName, function(){
+			removeFile(GoalsDir, GoalName, function(){
 				success();
 			});
 		});
 	}
 
-	function toRemoveTrack(projName, trackName, success) {
+	function toRemoveReward(projName, RewardName, success) {
 		getRewardsDir(projName, function(RewardsDir){
-			removeFile(RewardsDir, trackName, function(){
+			removeFile(RewardsDir, RewardName, function(){
 				success();
 			});
 		});
