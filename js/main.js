@@ -44,7 +44,10 @@ window.populateRewards=function(allRewards,points){
 	console.log(rewards.innerHTML);
 	for(var i=0;i<allRewards.length;i++){
 		var reward=allRewards[i];
-		html1='<button id="reward-'+reward.name+'" type="button" onclick="redeemReward('+reward.pts+','+reward.name+')" class="btn">Claim Your Reward!</button>'
+		console.log(reward.pts);
+		console.log(reward);
+		console.log(reward.name);
+		html1='<button id="reward-'+reward.name+'" type="button" onclick="redeemReward('+reward.pts+',\''+reward.name+'\')" class="btn">Claim Your Reward!</button>'
 		spacer='<span>&nbsp; &nbsp;</span>'
 		html2='<span>'+reward.name+'</span>'
 		html3= '<span class="label label-warning">'+ reward.pts+ 'Pts.</span> <br> <br>'
