@@ -34,7 +34,7 @@ var populateGoals = function(allGoals){
 		var goal = allGoals[i];
 		html1='<span>'+goal.name+'</span>'
 		goals.innerHTML+=html1;
-		html = '<div class="progress progress-striped active"><div id="goal-'+goal.name+'" class="progress-bar" role="progressbar" aria-valuenow="'+goal.current+'" aria-valuemin="0" aria-valuemax="100" style="width:'+(goal.current/goal.cost)*100+'%"><sup>1</sup>&frasl;<sub>10</sub></div>'
+		html = '<div class="progress progress-striped active"><div id="goal-'+goal.name+'" class="progress-bar" role="progressbar" aria-valuenow="'+goal.current+'" aria-valuemin="0" aria-valuemax="100" style="width:'+(goal.current/goal.cost)*100+'%"><sup>'+goal.current+'</sup>&frasl;<sub>'+goal.cost+'</sub></div>'
 		goals.innerHTML+=html;
 	}
 }
