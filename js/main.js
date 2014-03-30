@@ -33,6 +33,7 @@ var populateGoals = function(allGoals){
 	for(var i=0;i<allGoals.length;i++){
 		var goal = allGoals[i];
 		html1='<span>'+goal.name+'</span>'
+		html2='<button type="button" onclick="removeGoal('\''+goal.name+'\'')" class="btn">X</button> <span> &nbsp </span>'
 		goals.innerHTML+=html1;
 		html = '<div class="progress progress-striped active"><div id="goal-'+goal.name+'" class="progress-bar" role="progressbar" aria-valuenow="'+goal.current+'" aria-valuemin="0" aria-valuemax="100" style="width:'+(goal.current/goal.cost)*100+'%"><sup>'+goal.current+'</sup>&frasl;<sub>'+goal.cost+'</sub></div>'
 		goals.innerHTML+=html;
@@ -44,8 +45,10 @@ window.populateRewards=function(allRewards,points){
 	console.log(rewards.innerHTML);
 	for(var i=0;i<allRewards.length;i++){
 		var reward=allRewards[i];
-		html='<button type="button" onclick="removeReward('+reward.name+')" class="btn">X</button> <span>&nbsp</span>'
-		html1='<button id="reward-'+reward.name+'" type="button" onclick="redeemReward('+reward.pts+','+reward.name+')" class="btn">Claim Your Reward!</button>'
+		html='<button type="button" onclick="removeReward('\''+reward.name+'\'')" class="btn">X</button> <span> &nbsp </span>'
+
+		html1='<button id="reward-'+reward.name+'" type="button" onclick="redeemReward('+reward.pts+',\''+reward.name+'\')" class="btn">Claim Your Reward!</button>'
+
 		spacer='<span>&nbsp; &nbsp;</span>'
 		html2='<span>'+reward.name+'</span>'
 		html3= '<span class="label label-warning">'+ reward.pts+ 'Pts.</span> <br> <br>'
@@ -132,4 +135,12 @@ function redeemReward(pts, rewardname) {
 		$(".modal-body").html("You may now redeem your " + rewardname + " reward!");
 		$('#myModal3').modal('toggle');
 	});
+}
+
+function removeReward(rewardname) {
+	FileSystem.removeReward(rewardname);
+}
+
+function removeGoal(goalname) {
+	FileSystem.removeGoal(goalname);
 }
