@@ -62,6 +62,7 @@ function load() {
 
 function updateGoals(event) {
 	allGoals = event.detail;
+	populateGoals(allGoals);
 }
 
 function updateRewards(event) {
