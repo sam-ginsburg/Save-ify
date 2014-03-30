@@ -122,13 +122,15 @@ window.FileSystem = (function(){
 			});
 		},
 
-		usePoints: function(pointsUsed) {
+		usePoints: function(pointsUsed, success, failure) {
 			FileSystem.getPoints(function(pts){
 				if(pts - pointsUsed >= 0){
 					FileSystem.changePoints(-pointsUsed);
+					success();
 				}
 				else{
 					window.dispatchEvent(new CustomEvent('NotEnoughPoints', {detail: pointsUsed-pts}));
+					failure();
 				}
 			});
 		}
