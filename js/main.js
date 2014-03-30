@@ -38,13 +38,13 @@ var populateGoals = function(allGoals){
 		goals.innerHTML+=html;
 	}
 }
-window.populateRewards=function(allRewards){
+window.populateRewards=function(allRewards,points){
 	var rewarder=$('#rewards');
 	rewards.innerHTML="";
 	console.log(rewards.innerHTML);
 	for(var i=0;i<allRewards.length;i++){
 		var reward=allRewards[i];
-		html1='<button id="reward-'+reward.name+'" type="button" class="btn">Claim Your Reward!</button>'
+		html1='<button id="reward-'+reward.name+'" type="button" onclick="redeemReward('+reward.pts+','+reward.name+')" class="btn">Claim Your Reward!</button>'
 		spacer='<span>&nbsp; &nbsp;</span>'
 		html2='<span>'+reward.name+'</span>'
 		html3= '<span class="label label-warning">'+ reward.pts+ 'Pts.</span> <br> <br>'
@@ -123,6 +123,8 @@ function moneySaved(event) {
 	FileSystem.changePoints(event.detail.amt/100, function(){
 	});
 	$("#goal-"+event.detail.name.name)[0].style.width = (parseInt(event.detail.name.current,10)/parseInt(event.detail.name.cost,10))*100+"%";
+	$("#goal-"+event.detail.name.name).empty();
+	$("#goal-"+event.detail.name.name).append('<sup>'+event.detail.name.current+'</sup>&frasl;<sub>'+event.detail.name.cost+'</sub></div>');
 
 	//$("#pointBox").html((parseFloat(($("#pointBox").text()))+event.detail.amt)/100);
 }
