@@ -284,6 +284,10 @@ window.FileSystem = (function(){
 	function toGetAllGoals(projName, success) {
 		toGetAllGoalFiles(projName, function(fileEntries){
 			var GoalArray = [];
+			if(!fileEntries.length) {
+				success(GoalArray);
+				return false;
+			}
 			for(var i = 0; i<fileEntries.length; i++){
 				GoalFileToObj(fileEntries[i], function(Goal){
 					GoalArray.push(Goal);
@@ -310,6 +314,10 @@ window.FileSystem = (function(){
 	function toGetAllRewards(projName, success) {
 		toGetAllRewardFiles(projName, function(fileEntries){
 			var RewardArray = [];
+			if(!fileEntries.length) {
+				success(RewardArray);
+				return false;
+			}
 			for(var i = 0; i<fileEntries.length; i++){
 				RewardFileToObj(fileEntries[i], function(Reward){
 					RewardArray.push(Reward);
@@ -427,6 +435,7 @@ window.FileSystem = (function(){
 
 				if(newGoal.current >= newGoal.cost){
 					window.dispatchEvent(new CustomEvent('goalreached', {detail: {name: GoalName, pts: newGoal.pts, amt: AmountSaved}}));
+					window.dispatchEvent(new CustomEvent('moneySaved', {detail: {name: newGoal, amt: AmountSaved}}));
 					window.dispatchEvent(new CustomEvent('someChange'));
 					success();
 				}
