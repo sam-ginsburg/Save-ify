@@ -65,14 +65,26 @@ window.FileSystem = (function(){
 
 		saveMoney: function(GoalName, AmountSaved) {
 			toSaveMoney(GoalName, AmountSaved, function(){
-				window.dispatchEvent(new CustomEvent('Saved ' + AmountSaved + ' dollars for ' + GoalName));
+				console.log('Saved ' + AmountSaved + ' dollars for ' + GoalName);
+				window.dispatchEvent(new CustomEvent('moneySaved'));
 			});
 		},
 
 		getGoal: function(GoalName) {
 			toGetGoal("Savify", GoalName, function(goal){
 				window.dispatchEvent(new CustomEvent('GoalPulled'));
-				console.log(goal);
+			});
+		},
+
+		getAllGoals: function() {
+			toGetAllGoals("Savify", function(GoalArray){
+				window.dispatchEvent(new CustomEvent('AllGoalsPulled'), {detail: GoalArray});
+			});
+		},
+
+		getAllRewards: function() {
+			toGetAllRewards("Savify", function(RewardArray){
+				window.dispatchEvent(new CustomEvent('AllRewardsPulled'), {detail: RewardArray});
 			});
 		}
 
