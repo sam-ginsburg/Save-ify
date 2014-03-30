@@ -126,3 +126,10 @@ function moneySaved(event) {
 
 	//$("#pointBox").html((parseFloat(($("#pointBox").text()))+event.detail.amt)/100);
 }
+
+function redeemReward(pts, rewardname) {
+	FileSystem.usePoints(pts,function(){
+		$(".modal-body").html("You may now redeem your " + rewardname + " reward!");
+		$('#myModal3').modal('toggle');
+	});
+}
