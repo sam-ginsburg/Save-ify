@@ -53,6 +53,7 @@ window.populateRewards=function(allRewards){
 		rewards.innerHTML+=html2;
 		rewards.innerHTML+=spacer;
 		rewards.innerHTML+=html3;
+
 		if(i==allRewards.length-1){
 			newRew.innerHTML="";
 			newRew.innerHTML+=reward.name;
@@ -103,7 +104,13 @@ function updateGoals(event) {
 }
 
 function updateRewards(event) {
+	console.log("updating rewards");
 	allRewards = event.detail;
+	FileSystem.getPoints(function(pts){
+		populateRewards(allRewards, pts);
+	});
+	
+	console.log(allRewards);
 }
 
 function updatePoints(event) {
@@ -115,5 +122,7 @@ function updatePoints(event) {
 function moneySaved(event) {
 	FileSystem.changePoints(event.detail.amt/100, function(){
 	});
+	$("#goal-"+event.detail.name.name)[0].style.width = (parseInt(event.detail.name.current,10)/parseInt(event.detail.name.cost,10))*100+"%";
+
 	//$("#pointBox").html((parseFloat(($("#pointBox").text()))+event.detail.amt)/100);
 }
