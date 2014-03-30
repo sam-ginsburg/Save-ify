@@ -138,3 +138,11 @@ function redeemReward(pts, rewardname) {
 		$('#myModal3').modal('toggle');
 	});
 }
+
+function removeReward(rewardname) {
+	FileSystem.removeReward(rewardname);
+}
+
+function removeGoal(goalname) {
+	FileSystem.removeGoal(goalname);
+}
