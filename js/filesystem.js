@@ -434,8 +434,8 @@ window.FileSystem = (function(){
 			toRemoveGoal("Savify", GoalName, function(){
 
 				if(newGoal.current >= newGoal.cost){
-					window.dispatchEvent(new CustomEvent('goalreached', {detail: {name: GoalName, pts: newGoal.pts, amt: AmountSaved}}));
-					window.dispatchEvent(new CustomEvent('moneySaved', {detail: {name: newGoal, amt: AmountSaved}}));
+					window.dispatchEvent(new CustomEvent('goalreached', {detail: {name: GoalName, pts: newGoal.pts, amt: AmountSaved, cost: newGoal.cost}}));
+					//window.dispatchEvent(new CustomEvent('moneySaved', {detail: {name: newGoal, amt: AmountSaved}}));
 					window.dispatchEvent(new CustomEvent('someChange'));
 					success();
 				}

@@ -22,7 +22,7 @@ function start(){
 }
 
 function goalReached(event) {
-
+	FileSystem.changePoints((event.detail.cost/100)+(event.detail.amt/100));
 	$(".modal-body").html("Congrats! You have reached your " + event.detail.name + " goal! You have earned " + event.detail.pts + " points.");
 	$('#myModal').modal('toggle');
 
@@ -89,7 +89,7 @@ function rewardButton(event) {
 	event.preventDefault();
 	var rewardname = $('#rewName').val();
 	var cost = $('#rewCost').val();
-	FileSystem.createReward(rewardname, parseInt(cost,10));
+	FileSystem.createReward(rewardname, parseFloat(cost));
 	//return false;
 }
 
