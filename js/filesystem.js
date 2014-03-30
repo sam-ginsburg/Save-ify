@@ -125,7 +125,7 @@ window.FileSystem = (function(){
 					FileSystem.changePoints(-pointsUsed);
 				}
 				else{
-					window.dispatchEvent(new CustomEvent('NotEnoughPoints'));
+					window.dispatchEvent(new CustomEvent('NotEnoughPoints', {detail: pointsUsed-pts}));
 				}
 			});
 		}
